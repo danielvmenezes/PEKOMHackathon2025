@@ -9,6 +9,12 @@ const logger = require('./utils/logger');
 // Initialize Firebase
 require('./config/firebase');
 
+// Initialize JamAI tables
+const jamaiService = require('./services/jamai.service');
+jamaiService.initializeAllTables().catch(err => {
+  logger.error('JamAI initialization failed:', err.message);
+});
+
 // Initialize Express app
 const app = express();
 
@@ -112,8 +118,10 @@ try {
   app.use(`${API_PREFIX}/messages`, messageRoutes);
   app.use(`${API_PREFIX}/leads`, leadRoutes);
   app.use(`${API_PREFIX}/analytics`, analyticsRoutes);
+  
+  logger.info('✅ All routes loaded successfully');
 } catch (err) {
-  logger.warn('Some routes not yet implemented');
+  logger.warn(`Some routes not yet implemented: ${err.message}`);
 }
 
 // ==================== ERROR HANDLING ====================
